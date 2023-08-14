@@ -43,6 +43,12 @@ app.get('/', (req, res) => {
 
 //Signin route (POST)
 app.post('/signin', (req, res) => {
+    bcrypt.compare("pasta", '$2a$10$CJ/PhlRCWbSd3IxyMNBRfejXD3PhYL2VjrncAcFyY7wXmTqQdT75O', function(err, res) {
+        console.log('first guess', res);
+    });
+    bcrypt.compare("apples", '$2a$10$CJ/PhlRCWbSd3IxyMNBRfejXD3PhYL2VjrncAcFyY7wXmTqQdT75O', function(err, res) {
+        console.log('second guess', res);
+    });
     if (req.body.email === database.users[0].email && 
         req.body.password === database.users[0].password) {
             res.json('success');
@@ -70,8 +76,8 @@ app.get('/profile/:id', (req, res) => {
     }
 });
 
-//Image route (PUT)
-app.put('/image', (req, res) => {
+//Image route (POST)
+app.post('/image', (req, res) => {
     //Destructure the request body
     const { id } = req.body;
     //Set found to false (default)
@@ -95,6 +101,11 @@ app.put('/image', (req, res) => {
 app.post('/register', (req, res) => {
     //Destructure the request body
     const { email, name, password } = req.body;
+    //Hash the password
+    //A hash fucntion takes a string and returns a crazy string to protect the password
+    bcrypt.hash(password, null, null, function(err, hash) {
+        console.log(hash);
+    });
     //Push new user to database
     database.users.push({
         id: '12345',
@@ -108,6 +119,7 @@ app.post('/register', (req, res) => {
     res.json(database.users[database.users.length-1]);
 });
 
+//Listen on port 3000
 app.listen(3000, () => {
     console.log('Server started on port 3000');
 });
